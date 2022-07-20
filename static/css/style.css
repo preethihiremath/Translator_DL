@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+*{
+    box-sizing: border-box;
+    font-family: 'Bebas Neue', cursive;
+}
+body{
+    height: 100%;
+    background-color: #9A5CFF;
+    /* background-image: linear-gradient(#6947FE, #9A5CFF,#C66FFF); */
+    background-image: linear-gradient(#6947FE, #9A5CFF);
+    background-repeat: no-repeat;
+    /* overflow-y: hidden; */
+}
+.navbar{
+    background-color: #6947FE;
+    border-bottom: 1px solid #BAAAF8;  
+}
+
+/* .bg-gradient{
+    background-color: #9A5CFF;
+    background-image: linear-gradient(#6947FE, #9A5CFF);
+    padding-bottom: 0;
+} */
+
+.navbar .navbar-brand {
+    color: #fff !important;
+    padding: 1rem;
+}
+.language_title {
+    font-size: 28px;
+    line-height: 34px;
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.input_output_region{
+    padding: 4em 1em;
+    width: 100%;
+}
+
+.input_output_region textarea {
+    width: 100%;
+    min-height: 15em;   
+    font-size: 24px;
+}
+
+
+.input_form .btn {
+    float: right;   
+}
+
+
+.typewriter h3 {
+    color: #fff;
+    overflow: hidden; 
+    border-right: .15em solid #C66FFF;
+    white-space: nowrap; 
+text-align: center;
+    letter-spacing: .15em; 
+    animation:  typing 4s steps(44) 1s 1 normal both,
+    blinkTextCursor 500ms steps(44) infinite normal
+    
+  }
+  
+ 
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+  
+
+  @keyframes blinkTextCursor{
+    from{border-right-color: rgba(255,255,255,.75);}
+    to{border-right-color: transparent;}
+  }
+
+.footer{
+   padding: 2rem 3rem;
+    background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+    color: white;
+}
+.footer i {
+    color: white;
+    margin: 10px;
+}
