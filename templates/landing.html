@@ -21,9 +21,9 @@
 <body>
 
     <!-- NAVBAR -->
-    <nav class="navbar">
-        <a class="navbar-brand" href="#">
-            <i class="fa fa-car fa-lg d-inline-block align-top"></i>
+    <nav class="navbar text-centre">
+        <a class="navbar-brand text-centre" href="#">
+            <i class="fa fa-car fa-1x d-inline-block align-top pr-2"></i>
              Translator
         </a>
     </nav>
@@ -34,19 +34,28 @@
                 
                 <!-- INPUT LANGUAGE TEXT REGION -->
                 <div class="col input_text_region">
-                    <h3 class="language_title"> Hindi</h3>
+                    <h3 class="language_title"> ENGLISH</h3>
                     <form class="input_form" method="POST">
                         <textarea cols="50" type="text" id="input_lang_text" name="input_lang_text" class="input_lang_text" ></textarea>
-                        <button type="submit" class="btn btn-dark btn-lg " aria-selected="true">Translate</button>
+                        <button id="submit" type="submit" class="btn btn-dark btn-lg " aria-selected="true">Translate</button>
                     </form> 
                 </div>
 
                 <!-- TRANSLATED LANGUAGE TEXT REGION -->
-                <div class="col target_text_region">
-                    <div class="typewriter">
-                        <h3 class="language_title">English</h3>
-                    </div>
-                        <div type="text" id="input_lang_text" name="target_lang_text" class="target_lang_text" >{{translated_text}}</div>
+                <div class="col target_text_region text-centre align-middle">
+                        <h3 class="language_title">French </h3>
+                        <div class="background">
+                            <div class="typewriter align-middle" >
+                                <div type="text" id="input_lang_text" name="target_lang_text" class="target_lang_text" >
+                                    {%if translated_text%}
+                                        <h3>  {{ translated_text}} </h3>
+                                    {%else%}
+                                        <h3 class="align-middle">  Your Translation will be displayed here</h3>
+                                    {%endif%}  
+                                </div>
+                            </div>
+                        </div>
+                       
                 </div>    
             </div>
         </div>
@@ -67,6 +76,6 @@
         </footer>
     </div>
 
-    
+<script src="{{url_for('static', filename='js/script.js')}}"></script> 
 </body>
 </html>

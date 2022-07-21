@@ -6,6 +6,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import re
+import string
+from string import digits
 import pickle
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
@@ -23,6 +25,8 @@ num_dec_chars=0
 cv=CountVectorizer(binary=True,tokenizer=lambda txt: txt.split(),stop_words=None,analyzer='char') 
 
 
+
+
 #get all data from datafile and load the model.
 datafile = pickle.load(open("training_data.pkl","rb"))
 input_characters = datafile['input_characters']
@@ -31,6 +35,7 @@ max_input_length = datafile['max_input_length']
 max_target_length = datafile['max_target_length']
 num_en_chars = datafile['num_en_chars']
 num_dec_chars = datafile['num_dec_chars']
+
 
 #Inference model
 #load the model
@@ -98,6 +103,34 @@ def decode_sequence(input_seq):
     #return the decoded sentence
     return decoded_sentence
 
+def filtering(input_sentence):
+    digit = list(range(10))
+    punc = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+ 
+    for ele in input_sentence:
+        if ele in punc:
+           input_sentence = input_sentence.replace(ele, "")
+        if digit in input_sentence: 
+            input_sentence= input_sentence.replace(ele, "")
+    
+
+def filtering_the_input(input_sentence):
+    input_sentence  = input_sentence.lower()
+   
+    input_sentence  = re.sub("'", '', input_sentence)
+    input_sentence  = re.sub('”', '', input_sentence)
+    input_sentence  = re.sub('“', '', input_sentence)
+    input_sentence  = re.sub('"', '', input_sentence)
+    input_sentence  = re.sub('"', '', input_sentence)
+    exclude = set(string.punctuation) 
+    input_sentence  = ''.join(ch for ch in input_sentence if ch not in exclude)
+    remove_digits = str.maketrans('', '', digits)
+    input_sentence  = input_sentence.translate(remove_digits)
+    input_sentence  = input_sentence.strip()
+    input_sentence  = re.sub(" +", " ", input_sentence)
+    print("the input sentence is " +input_sentence)
+    return input_sentence
+    
 def bag_of_characters(input_t):
     cv=CountVectorizer(binary=True,tokenizer=lambda txt: txt.split(),stop_words=None,analyzer='char') 
     en_in_data=[]; 
@@ -109,13 +142,14 @@ def bag_of_characters(input_t):
     if len(input_t)<max_target_length:
         for _ in range(max_target_length-len(input_t)):
             en_in_data[0].append(pad_en)
-            print(en_in_data)
+            
 
     return np.array(en_in_data,dtype="float32")
 
 def predict(fr_in_data):
     en_in_data = bag_of_characters(fr_in_data.lower()+".")
+    print(input_characters,target_characters,max_input_length,max_target_length,num_en_chars,num_dec_chars)
     y_pred = decode_sequence(en_in_data)
-    return y_pred
+    return y_pred    
 
     

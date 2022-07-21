@@ -6,15 +6,17 @@
 }
 body{
     height: 100%;
-    background-color: #9A5CFF;
+    background-color: #000;
     /* background-image: linear-gradient(#6947FE, #9A5CFF,#C66FFF); */
-    background-image: linear-gradient(#6947FE, #9A5CFF);
+     background-image: linear-gradient(#000F30, #000F30); 
     background-repeat: no-repeat;
+    color: #00ED7D;
     /* overflow-y: hidden; */
 }
 .navbar{
-    background-color: #6947FE;
-    border-bottom: 1px solid #BAAAF8;  
+    /* background-color: #6947FE; */
+    background-color: #000F30;
+    /* border-bottom: 1px solid #BAAAF8;   */
 }
 
 /* .bg-gradient{
@@ -26,6 +28,8 @@ body{
 .navbar .navbar-brand {
     color: #fff !important;
     padding: 1rem;
+    font-size: 30px !important;
+    text-align: center !important;
 }
 .language_title {
     font-size: 28px;
@@ -33,7 +37,7 @@ body{
     text-align: center;
     margin-top: 4px;
     margin-bottom: 20px;
-    color: #fff;
+    color: #00ED7D;
 }
 
 .input_output_region{
@@ -49,23 +53,36 @@ body{
 
 
 .input_form .btn {
+    margin-top: 1em;
     float: right;   
+    background-color: white;
+    color: black;
 }
 
-
+.input_form .btn:disabled{
+    margin-top: 1em;
+    float: right;   
+    background-color: white;
+    color: black;
+}
+.background{
+    background-color:  #fff;
+    min-height: 22.5em;  
+}
 .typewriter h3 {
-    color: #fff;
+    vertical-align: middle;
+    color: #000;
     overflow: hidden; 
+    padding: 2em 2em;
     border-right: .15em solid #C66FFF;
     white-space: nowrap; 
-text-align: center;
+    text-align: center;
     letter-spacing: .15em; 
     animation:  typing 4s steps(44) 1s 1 normal both,
     blinkTextCursor 500ms steps(44) infinite normal
     
   }
   
- 
   @keyframes typing {
     from { width: 0 }
     to { width: 100% }
@@ -79,10 +96,11 @@ text-align: center;
 
 .footer{
    padding: 2rem 3rem;
-    background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+   background-color: 000F30;
+    background-image: linear-gradient(rgba(0, 15, 48,0.5), rgba(86, 124, 206, 0.6));
     color: white;
 }
 .footer i {
-    color: white;
+    color: #00ED7D;
     margin: 10px;
 }
