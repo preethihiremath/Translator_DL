@@ -39,8 +39,8 @@ for row in rows[:10000]:
 input_characters = sorted(list(input_characters))
 target_characters = sorted(list(target_characters))
 
-print("INPUT CHAR : "+input_characters)
-print("INPUT texts : "+input_texts)
+# print("INPUT CHAR : "+input_characters)
+# print("INPUT texts : "+input_texts)
 
 #get the total length of input and target characters
 num_en_chars = len(input_characters)
@@ -50,6 +50,7 @@ num_dec_chars = len(target_characters)
 #get the maximum length of input and target text.
 max_input_length = max([len(i) for i in input_texts]) #NO OF WORDS IN ENG
 max_target_length = max([len(i) for i in target_texts]) #NO OF WORDS IN FRENCH
+#VECTORIZING AND ONE HOT ENCODING
 
 def bag_of_characters(input_texts,target_texts):
   #inintialize encoder , decoder input and target data.
@@ -63,6 +64,7 @@ def bag_of_characters(input_texts,target_texts):
   pad_dec[2]=1
   
   print("input and target in bag of char"+input_t, target_t)
+
   cv=CountVectorizer(binary=True,tokenizer=lambda txt: txt.split(),stop_words=None,analyzer='char')
   for i,(input_t,target_t) in enumerate(zip(input_texts,target_texts)):
     #fit the input characters into the CountVectorizer function
@@ -70,16 +72,19 @@ def bag_of_characters(input_texts,target_texts):
     
     #transform the input text from the help of CountVectorizer fit.
     #if character present than put 1 and 0 otherwise.
+
     en_in_data.append(cv_inp.transform(list(input_t)).toarray().tolist())
     cv_tar= cv.fit(target_characters)		
     dec_in_data.append(cv_tar.transform(list(target_t)).toarray().tolist())
-    #decoder target will be one timestep ahead because it will not consider 
-    #the first character i.e. '\t'.
+
+    #decoder target will be one time step ahead because it will not consider 
+    #the first character i.e. '\START'.
+
     dec_tr_data.append(cv_tar.transform(list(target_t)[1:]).toarray().tolist())
     
     print("input and target in bag of char after encoding"+input_t, target_t)
     #add padding variable if the length of the input or target text is smaller
-    #than their respective maximum input or target length. 
+
     if len(input_t) < max_input_length:
       for _ in range(max_input_length-len(input_t)):
         en_in_data[i].append(pad_en)
