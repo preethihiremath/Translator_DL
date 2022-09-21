@@ -12,7 +12,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
     <!-- ICONS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-   
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
@@ -21,28 +24,31 @@
 <body>
 
     <!-- NAVBAR -->
-    <nav class="navbar text-centre">
+    <nav class="navbar justify-centre">
         <a class="navbar-brand text-centre" href="#">
-            <i class="fa fa-car fa-1x d-inline-block align-top pr-2"></i>
-             Translator
+            <i class="fa fa-car fa-1x d-inline-block align-middle pr-2"></i>
+            Language Translator
         </a>
     </nav>
-
-    <div class="bg-gradient">
-        <div class="container">
+    <img src="/static/img/map.png" class="map"/>
+    <img src="/static/img/p.png" class="p"/>
+    <div class="bg-gradient pt-5">
+        <div class="container pt-3">
             <div class="row input_output_region">
                 
                 <!-- INPUT LANGUAGE TEXT REGION -->
-                <div class="col input_text_region">
+                <div class="col-12 col-md-5 input_text_region">
                     <h3 class="language_title"> ENGLISH</h3>
                     <form class="input_form" method="POST">
-                        <textarea cols="50" type="text" id="input_lang_text" name="input_lang_text" class="input_lang_text" ></textarea>
-                        <button id="submit" type="submit" class="btn btn-dark btn-lg " aria-selected="true">Translate</button>
-                    </form> 
+                        <textarea cols="40" type="text" id="input_lang_text" name="input_lang_text" class="input_lang_text" ></textarea>      
                 </div>
 
+                <div class="col-12 col-md-2 col-centered align-middle">
+                    <button id="submit" type="submit" class="btn btn-sm " aria-selected="true"> <img src="/static/img/translate.png" class="translate_button" /></button>
+                </div>
+            </form>
                 <!-- TRANSLATED LANGUAGE TEXT REGION -->
-                <div class="col target_text_region text-centre align-middle">
+                <div class="col-12 col-md-5 target_text_region text-centre align-middle">
                         <h3 class="language_title">French </h3>
                         <div class="background">
                             <div class="typewriter align-middle" >
@@ -59,18 +65,27 @@
                 </div>    
             </div>
         </div>
+        <img src="/static/img/A.png" class="a" />
+       
+        <img src="/static/img/R.png" class="r"/>
         <footer class="footer">
-            <div class="container">
-                <div class="row justify-content-between">
+            <div class="container-fluid">
+
+                <div class="row justify-content-around">
                     <div class="col">
-                            Copyright something
+                           <img src="/static/img/btm_left_img.png"  />
                     </div>
-                    <div class="col"></div>
+                    <div class="col"><img src="/static/img/hin.png" class="hindi"/> 
+                        <img src="/static/img/jap.png" class="japan" /> </div>
                     <div class="col flex-row">
-                        <i class="fa fa-github fa-2x"></i>
-                        <i class="fa fa-instagram fa-2x"></i>
-                        <i class="fa fa-youtube fa-2x"></i>
+                        
+                        <i class="fa fa-github fa-2x" style="color: #feaf2e"></i>
+                        <i class="fa fa-instagram fa-2x" style="color: #fa6449"></i>
+                        <i class="fa fa-youtube fa-2x" style="color: #dd2426"></i>
+                        <img src="/static/img/btm_right_img.png"
+                        />
                     </div>
+                    <img src="/static/img/jambo.png"/>
                 </div>
             </div>
         </footer>

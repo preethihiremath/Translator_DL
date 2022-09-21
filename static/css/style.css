@@ -1,76 +1,115 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 *{
-    box-sizing: border-box;
-    font-family: 'Bebas Neue', cursive;
+    box-sizing: border-box;   
 }
 body{
     height: 100%;
-    background-color: #000;
-    /* background-image: linear-gradient(#6947FE, #9A5CFF,#C66FFF); */
-     background-image: linear-gradient(#000F30, #000F30); 
-    background-repeat: no-repeat;
-    color: #00ED7D;
-    /* overflow-y: hidden; */
+    background-color: #E4E6F4;
+    color: #2a284C; 
+    font-family: 'Bebas Neue', cursive;
 }
 .navbar{
-    /* background-color: #6947FE; */
-    background-color: #000F30;
-    /* border-bottom: 1px solid #BAAAF8;   */
+    background-color: #E4E6F4;
 }
 
-/* .bg-gradient{
-    background-color: #9A5CFF;
-    background-image: linear-gradient(#6947FE, #9A5CFF);
-    padding-bottom: 0;
-} */
+.bg-gradient {
+    background-color: #E4E6F4;
+}
 
+.navbar {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    justify-content: center !important;
+}
 .navbar .navbar-brand {
-    color: #fff !important;
     padding: 1rem;
-    font-size: 30px !important;
+    text-align: center;
     text-align: center !important;
+    font-family: 'Oswald' ;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 44px !important;
+    line-height: 71px;
+    text-align: center;
+    color: #2a284C !important;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  
 }
+
 .language_title {
     font-size: 28px;
     line-height: 34px;
     text-align: center;
     margin-top: 4px;
     margin-bottom: 20px;
-    color: #00ED7D;
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 71px;
+    text-align: center;
+    
+    color: #28284C;
+    
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .input_output_region{
-    padding: 4em 1em;
+    padding: 2em 1em;
     width: 100%;
 }
-
+form {
+    box-sizing: border-box;
+}
 .input_output_region textarea {
     width: 100%;
-    min-height: 15em;   
-    font-size: 24px;
+    /* min-width:  476px;
+    min-height: 15em;   */
+    height: 290px; 
+    font-size: 22px;
+    border: transparent;
 }
+.input_text_region {
+    width: 100%;
+    height: 398px; 
+background: #FFFFFF;
+border-radius: 25px;
+position: absolute;
+}
+.target_text_region{
+    width: 100%;
+    height: 398px;
+    background: #FFFFFF;
+    border-radius: 25px;
+}
+button {
+    position: relative;
+width: 100px;
+height: 100px;
+left: 1em;
+top: 10em;
 
-
+}
 .input_form .btn {
     margin-top: 1em;
     float: right;   
-    background-color: white;
-    color: black;
+    background-color: #C6C8EE !important;
+
 }
 
 .input_form .btn:disabled{
     margin-top: 1em;
     float: right;   
-    background-color: white;
+    background-color: black !important;
     color: black;
 }
-.background{
+/* .background{
     background-color:  #fff;
     min-height: 22.5em;  
-}
-.typewriter h3 {
+} */
+/* .typewriter h3 {
     vertical-align: middle;
     color: #000;
     overflow: hidden; 
@@ -82,9 +121,9 @@ body{
     animation:  typing 4s steps(44) 1s 1 normal both,
     blinkTextCursor 500ms steps(44) infinite normal
     
-  }
+  } */
   
-  @keyframes typing {
+  /* @keyframes typing {
     from { width: 0 }
     to { width: 100% }
   }
@@ -93,15 +132,75 @@ body{
   @keyframes blinkTextCursor{
     from{border-right-color: rgba(255,255,255,.75);}
     to{border-right-color: transparent;}
-  }
+  } */
 
 .footer{
    padding: 2rem 3rem;
-   background-color: 000F30;
-    background-image: linear-gradient(rgba(0, 15, 48,0.5), rgba(86, 124, 206, 0.6));
+   background-color: #E4E6F4;
+    /* background-image: linear-gradient(rgba(0, 15, 48,0.5), rgba(86, 124, 206, 0.6)); */
     color: white;
 }
 .footer i {
-    color: #00ED7D;
+
     margin: 10px;
+}
+
+.a {
+    position: absolute;
+left: 2.29%;
+right: 94.56%;
+top: 48%;
+bottom: 46.15%;
+transform: rotate(-56deg);
+}
+
+/* .p{
+    position: absolute;
+   left: 1300.62px;
+    top: 284.36px; 
+    z-index: -100;
+   
+    transform: rotate(165deg);
+} */
+.map{
+    position: absolute;
+    /* left: 1300.62px;
+    top: 284.36px; */
+    width: 364px;
+height: 500px;
+    z-index: 0;
+    right: 0;
+top: 200;
+}
+
+.p{
+    position: absolute;
+width: 74.52px;
+height: 89.97px;
+left: 120.62px;
+top: 98.36px;
+
+}
+.r {
+position: absolute;
+left: 645px;
+top: 218px;
+transform: rotate(58deg);
+}
+
+
+
+.japan {
+position: absolute;
+width: 46.42px;
+height: 46.42px;
+/* left: 529px;
+top: 820px; */
+bottom: 30px;
+}
+
+.jambo{
+    position: absolute;
+    top: 0;
+    right: 0;
 }

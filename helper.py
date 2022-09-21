@@ -1,155 +1,136 @@
 import tensorflow as tf
-from tensorflow.keras.applications import densenet
-from tensorflow.keras.applications.densenet import preprocess_input
-from tensorflow import keras
-import pandas as pd
-import matplotlib.pyplot as plt
-import tensorflow as tf
-import re
-import string
-from string import digits
-import pickle
 import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer
 from tensorflow.keras.models import Model
 from tensorflow.keras import models
 from tensorflow.keras.layers import Input,LSTM,Dense
 
 input_characters=[]
 target_characters=[]
+
 max_input_length=0
 max_target_length=0
+
 num_en_chars=0
 num_dec_chars=0
 
-cv=CountVectorizer(binary=True,tokenizer=lambda txt: txt.split(),stop_words=None,analyzer='char') 
+
+batch_size = 64  # Batch size for training.
+epochs = 100  # Number of epochs to train for.
+latent_dim = 256  # Latent dimensionality of the encoding space.
+num_samples = 10000  # Number of samples to train on.
 
 
-#get all data from datafile and load the model
+# Vectorize the data.
+input_texts = []
+target_texts = []
+input_characters = set()
+target_characters = set()
+with open("eng-french.txt", 'r', encoding='utf-8') as f:
+    lines = f.read().split('\n')
 
-datafile = pickle.load(open("training_data.pkl","rb"))
-input_characters = datafile['input_characters']
-target_characters = datafile['target_characters']
-max_input_length = datafile['max_input_length']
-max_target_length = datafile['max_target_length']
-num_en_chars = datafile['num_en_chars']
-num_dec_chars = datafile['num_dec_chars']
+for line in lines[: 10000]:
+    input_text, target_text = line.split('\t')
+    # We use "tab" as the "start sequence" character
+    # for the targets, and "\n" as "end sequence" character.
+    target_text = '\t' + target_text + '\n'
+    input_texts.append(input_text)
+    target_texts.append(target_text)
+    for char in input_text:
+        if char not in input_characters:
+            input_characters.add(char)
+    for char in target_text:
+        if char not in target_characters:
+            target_characters.add(char)
 
 
+input_characters = sorted(list(input_characters))
+target_characters = sorted(list(target_characters))
+num_encoder_tokens = len(input_characters)
+num_decoder_tokens = len(target_characters)
+max_encoder_seq_length = max([len(txt) for txt in input_texts])
+max_decoder_seq_length = max([len(txt) for txt in target_texts])
+
+input_token_index = dict([(char, i) for i, char in enumerate(input_characters)])
+target_token_index = dict([(char, i) for i, char in enumerate(target_characters)])
+
+
+encoder_input_data = np.zeros( (len(input_texts), max_encoder_seq_length, num_encoder_tokens), dtype='float32')
+for i, input_text in enumerate(input_texts):
+    for t, char in enumerate(input_text):
+        encoder_input_data[i, t, input_token_index[char]] = 1.
+        
 
 #load the model
-model = models.load_model("s2s")
+
+model = models.load_model("s2s.h5")
 
 
-enc_outputs, state_h_enc, state_c_enc = model.layers[2].output  # lstm_1
+encoder_inputs = model.input[0]   # input_1
+encoder_outputs, state_h_enc, state_c_enc = model.layers[2].output   # lstm_1
+encoder_states = [state_h_enc, state_c_enc]
 
-#add input object and state from the layer.
-enc_model = Model(model.input[0], [state_h_enc, state_c_enc])
-
+encoder_model = Model(encoder_inputs, encoder_states)
 #create Input object for hidden and cell state for decoder
 #shape of layer with hidden or latent dimension
-dec_state_input_h = Input(shape=(256,), name="input_3")
-dec_state_input_c = Input(shape=(256,), name="input_4")
-dec_states_inputs = [dec_state_input_h, dec_state_input_c]
 
-#add input from the encoder output and initialize with 
-#states.
-dec_lstm = model.layers[3]
-dec_outputs, state_h_dec, state_c_dec = dec_lstm(
-    model.input[1], initial_state=dec_states_inputs
-)
-dec_states = [state_h_dec, state_c_dec]
-dec_dense = model.layers[4]
-dec_outputs = dec_dense(dec_outputs)
+decoder_inputs = model.input[1]   # input_2
 
+decoder_state_input_h = Input(shape=(latent_dim,), name='input_3')
+decoder_state_input_c = Input(shape=(latent_dim,), name='input_4')
+decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
+decoder_lstm = model.layers[3]
+decoder_outputs, state_h_dec, state_c_dec = decoder_lstm(
+    decoder_inputs, initial_state=decoder_states_inputs)
+decoder_states = [state_h_dec, state_c_dec]
 
+decoder_dense = model.layers[4]
+decoder_outputs = decoder_dense(decoder_outputs)
 
-dec_model = Model(
-    [model.input[1]] + dec_states_inputs, [dec_outputs] + dec_states
-)
+decoder_model = Model(   [decoder_inputs] + decoder_states_inputs,  [decoder_outputs] + decoder_states)
+
+reverse_input_char_index = dict( (i, char) for char, i in input_token_index.items())
+reverse_target_char_index = dict( (i, char) for char, i in target_token_index.items())
+
 
 def decode_sequence(input_seq):
-    #create dict object to get character from the index.
-    reverse_target_char_index = dict(enumerate(target_characters))
-    #get the states from the user input sequence
-    states_value = enc_model.predict(input_seq)
-
-    #fit target characters and 
-    #initialize every first character to be 1 which is '\t'.
-    #Generate empty target sequence of length 1.
-    co=cv.fit(target_characters) 
-    target_seq=np.array([co.transform(list("\t")).toarray().tolist()],dtype="float32")
-
-    #if the iteration reaches the end of text than it will be stop the it
+    # Encode the input as state vectors.
+    states_value = encoder_model.predict(input_seq)
+# Generate empty target sequence of length 1.
+    target_seq = np.zeros((1, 1, num_decoder_tokens))
+    # Populate the first character of target sequence with the start character.
+    target_seq[0, 0, target_token_index['\t']] = 1.
+# Sampling loop for a batch of sequences(to simplify, here we assume a batch of size 1).
     stop_condition = False
-    #append every predicted character in decoded sentence
-    decoded_sentence = ""
+    decoded_sentence = ''
+    
     while not stop_condition:
-        #get predicted output and discard hidden and cell state.
-        output_chars, h, c = dec_model.predict([target_seq] + states_value)
-
-        #get the index and from dictionary get character from it.
-        char_index = np.argmax(output_chars[0, -1, :])
-        text_char = reverse_target_char_index[char_index]
-        decoded_sentence += text_char
-
+        output_tokens, h, c = decoder_model.predict( [target_seq] + states_value)
+        # Sample a token
+        sampled_token_index = np.argmax(output_tokens[0, -1, :]) #1,2,3,4,12,40 (index of 40)
+        sampled_char = reverse_target_char_index[sampled_token_index]
+        decoded_sentence += sampled_char
         # Exit condition: either hit max length
-        # or find stop character.
-        if text_char == "\n" or len(decoded_sentence) > max_target_length:
+                # or find stop character.
+        if (sampled_char == '\n' or len(decoded_sentence) > max_decoder_seq_length):
             stop_condition = True
-        #update target sequence to the current character index.
-        target_seq = np.zeros((1, 1, num_dec_chars))
-        target_seq[0, 0, char_index] = 1.0
+        # Update the target sequence (of length 1).
+        target_seq = np.zeros((1, 1, num_decoder_tokens))
+        target_seq[0, 0, sampled_token_index] = 1.
+        # Update states
         states_value = [h, c]
-    #return the decoded sentence
+
     return decoded_sentence
 
-# def filtering(input_sentence):
-#     digit = list(range(10))
-#     punc = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
- 
-#     for ele in input_sentence:
-#         if ele in punc:
-#            input_sentence = input_sentence.replace(ele, "")
-#         if digit in input_sentence: 
-#             input_sentence= input_sentence.replace(ele, "")
-    
 
-# def filtering_the_input(input_sentence):
-#     input_sentence  = input_sentence.lower()
-   
-#     input_sentence  = re.sub("'", '', input_sentence)
-#     input_sentence  = re.sub('”', '', input_sentence)
-#     input_sentence  = re.sub('“', '', input_sentence)
-#     input_sentence  = re.sub('"', '', input_sentence)
-#     input_sentence  = re.sub('"', '', input_sentence)
-#     exclude = set(string.punctuation) 
-#     input_sentence  = ''.join(ch for ch in input_sentence if ch not in exclude)
-#     remove_digits = str.maketrans('', '', digits)
-#     input_sentence  = input_sentence.translate(remove_digits)
-#     input_sentence  = input_sentence.strip()
-#     input_sentence  = re.sub(" +", " ", input_sentence)
-#     print("the input sentence is " +input_sentence)
-#     return input_sentence
-    
-def bag_of_characters(input_t):
-    cv=CountVectorizer(binary=True,tokenizer=lambda txt: txt.split(),stop_words=None,analyzer='char') 
-    en_in_data=[]; 
-    pad_en=[1]+[0]*(len(input_characters)-1)
 
-    cv_inp= cv.fit(input_characters)
-    en_in_data.append(cv_inp.transform(list(input_t)).toarray().tolist())
-
-    if len(input_t)<max_target_length:
-        for _ in range(max_target_length-len(input_t)):
-            en_in_data[0].append(pad_en)           
-
-    return np.array(en_in_data,dtype="float32")
 
 def predict(fr_in_data):
-    en_in_data = bag_of_characters(fr_in_data.lower()+".") #ONE HOT ENCODING 
-    # print(input_characters,target_characters,max_input_length,max_target_length,num_en_chars,num_dec_chars)
-    y_pred = decode_sequence(en_in_data)
+    test_sentence_tokenized = np.zeros(  (1, max_encoder_seq_length, num_encoder_tokens), dtype='float32')
+    for t, char in enumerate(fr_in_data):
+         test_sentence_tokenized[0, t, input_token_index[char]] = 1.    
+    y_pred = decode_sequence(test_sentence_tokenized)
+    print("Input Sentence is : ", fr_in_data)
+    print("Translated Sentence is  ",y_pred)    
     return y_pred    
 
     
