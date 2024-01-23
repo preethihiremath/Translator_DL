@@ -4,6 +4,7 @@ import helper as hlp
 
 app = Flask(__name__)
 
+# fetch the model api
 @app.route('/',methods=['GET','POST'])
 def predict():
     if request.method == "POST":
